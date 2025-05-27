@@ -1,9 +1,11 @@
 ﻿using EmployeeHierarchyApi.DTOs;
 using EmployeeHierarchyApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeHierarchyApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class EmployeesController : ControllerBase

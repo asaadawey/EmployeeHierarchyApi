@@ -1,4 +1,6 @@
 ﻿using EmployeeHierarchyApi.Data.Entities;
+using EmployeeHierarchyApi.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeHierarchyApi.Data;
@@ -7,9 +9,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Employee> Employees { get; set; }
 
+    public DbSet<User> Users { get; set; }
     // Build the database and it's relationship
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var passwordHasher = new PasswordHasher<User>();
+
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+        });
+
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -34,6 +46,35 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             new Employee { Id = 5, Name = "Tom Davis", Title = "Senior Developer", ManagerId = 4 },
             new Employee { Id = 6, Name = "Anna Garcia", Title = "Developer", ManagerId = 4 },
             new Employee { Id = 7, Name = "David Miller", Title = "Sales Manager", ManagerId = 3 }
+        );
+
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                Id = 1,
+                FirstName = "Test",
+                LastName = "Test",
+                Username = "testuser",
+                Email = "test@example.com",
+                PasswordHash = passwordHasher.HashPassword(new User(), "1234"),
+                Role = "Admin",
+                CreatedAt = DateTime.UtcNow,
+                LastLoginAt = null,
+                IsActive = true
+            },
+            new User
+            {
+                Id = 2,
+                FirstName = "Test",
+                LastName = "Test",
+                Username = "testuser2",
+                Email = "test2@example.com",
+                PasswordHash = passwordHasher.HashPassword(new User(), "1234"),
+                Role = "Admin",
+                CreatedAt = DateTime.UtcNow,
+                LastLoginAt = null,
+                IsActive = true
+            }
         );
     }
 }
